@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeafScan — Deteksi Penyakit Tanaman</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 4C18 4 8 10 8 20C8 25.52 12.48 30 18 30C23.52 30 28 25.52 28 20C28 10 18 4 18 4Z"
+            fill="rgba(76,175,80,0.15)" stroke="#4caf50" stroke-width="1.5"/>
+          <path d="M18 30V16M18 16C18 16 13 20 11 24M18 16C18 16 23 20 25 24"
+            stroke="#7eda7e" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">Leaf<span>Scan</span></span>
+    </div>
+    <span class="badge">Plant Disease AI · v1.0</span>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <p class="hero-eyebrow">Powered by Convolutional Neural Network</p>
+    <h1 class="hero-title">Kenali penyakit<br><em>tanamanmu</em> dalam detik</h1>
+    <p class="hero-subtitle">Upload foto daun tanaman pangan kamu. AI akan mendeteksi apakah tanaman sehat atau sakit, jenis penyakitnya, dan tingkat keparahannya.</p>
+  </section>
+
+  <!-- ===== MAIN UPLOAD ===== -->
+  <main class="main">
+    <div class="upload-card">
+
+      <!-- Drop Zone -->
+      <div class="upload-zone" id="dropZone">
+        <div class="upload-icon">
+          <div class="upload-icon-ring">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+              stroke="#4a6a4a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+        </div>
+        <p class="upload-title">Letakkan foto daun di sini</p>
+        <p class="upload-hint">atau <span>klik untuk browse</span> · JPG, PNG, WEBP · Maks 10MB</p>
+        <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Pilih Foto
+        </button>
+        <input type="file" id="file-input" accept="image/*">
+      </div>
+
+      <!-- Preview & Result -->
+      <div class="preview-section" id="previewSection">
+        <div class="divider"></div>
+        <div class="preview-grid" style="padding: 0 20px;">
+          <div class="preview-img-wrap">
+            <img id="previewImg" src="" alt="Preview">
+            <div class="preview-img-overlay" id="imgLabel">—</div>
+          </div>
+          <div class="result-panel" id="resultPanel">
+            <div class="result-status analyzing" id="statusBadge">
+              <div class="status-dot"></div>
+              <span id="statusText">Menunggu analisis...</span>
+            </div>
+            <div id="resultContent"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Row -->
+      <div class="action-row" id="actionRow" style="display:none;">
+        <button class="btn-reset" onclick="resetApp()">↩ Reset</button>
+        <button class="btn-scan" id="scanBtn" onclick="startAnalysis()">⬡ Mulai Analisis</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== INFO STATS ===== -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-num">38</div>
+        <div class="info-label">Jenis Penyakit</div>
+        <div class="info-desc">Dataset PlantVillage mencakup 38 kategori penyakit tanaman yang sudah dilabeli oleh ahli.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-num">54K+</div>
+        <div class="info-label">Foto Training</div>
+        <div class="info-desc">Model dilatih menggunakan lebih dari 54.000 foto daun dalam kondisi sehat dan sakit.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-num">~95%</div>
+        <div class="info-label">Akurasi Target</div>
+        <div class="info-desc">Dengan transfer learning ResNet18, model bisa mencapai akurasi di atas 90–95%.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DISEASE GUIDE ===== -->
+  <section class="info-section" style="padding-top: 0;">
+    <div class="section-header">
+      <h2 class="section-title">Penyakit yang Bisa Dideteksi</h2>
+      <span class="section-sub">Tanaman Pangan</span>
+    </div>
+    <div class="disease-list">
+      <div class="disease-item">
+        <div class="disease-swatch" style="background:#e74c3c;"></div>
+        <span class="disease-item-name">Hawar Daun (Late Blight)</span>
+        <span class="disease-item-crop">Padi · Kentang</span>
+      </div>
+      <div class="disease-item">
+        <div class="disease-swatch" style="background:#e67e22;"></div>
+        <span class="disease-item-name">Bercak Daun (Leaf Spot)</span>
+        <span class="disease-item-crop">Jagung · Padi</span>
+      </div>
+      <div class="disease-item">
+        <div class="disease-swatch" style="background:#f39c12;"></div>
+        <span class="disease-item-name">Karat Daun (Rust)</span>
+        <span class="disease-item-crop">Jagung · Gandum</span>
+      </div>
+      <div class="disease-item">
+        <div class="disease-swatch" style="background:#8e44ad;"></div>
+        <span class="disease-item-name">Busuk Batang (Stem Rot)</span>
+        <span class="disease-item-crop">Padi</span>
+      </div>
+      <div class="disease-item">
+        <div class="disease-swatch" style="background:#16a085;"></div>
+        <span class="disease-item-name">Embun Tepung (Powdery Mildew)</span>
+        <span class="disease-item-crop">Jagung · Kacang</span>
+      </div>
+      <div class="disease-item">
+        <div class="disease-swatch" style="background:#27ae60;"></div>
+        <span class="disease-item-name">✓ Sehat (Healthy)</span>
+        <span class="disease-item-crop">Semua Tanaman</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <span class="footer-note">LeafScan · Project Pembelajaran ML · Dataset: PlantVillage (Kaggle)</span>
+    <div class="footer-tech">
+      <span class="tech-pill">Python</span>
+      <span class="tech-pill">PyTorch</span>
+      <span class="tech-pill">Flask</span>
+      <span class="tech-pill">CNN</span>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+
+</body>
+</html>
